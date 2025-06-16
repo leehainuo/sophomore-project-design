@@ -50,7 +50,7 @@ export class UserService {
 
   async findOne(findOneUserDto: FindOneUserDto) {
     const { username, password } = findOneUserDto;
-    console.log('!!!!!', username, password);
+    console.log('🌈 Service层:用户的账号密码', username, password);
     // 1. 查找用户
     const foundUsers = await this.db
       .select()

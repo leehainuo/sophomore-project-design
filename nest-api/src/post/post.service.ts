@@ -3,7 +3,7 @@ import { DB, DrizzleService } from 'src/drizzle/drizzle.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { post } from 'src/drizzle/schema/schema';
 import { FindOnePostDto } from './dto/find-one-post.dto';
-import { eq } from 'drizzle-orm';
+import { eq, or, like } from 'drizzle-orm';
 import { DeletePostDto } from './dto/delete-post.dto';
 
 @Injectable()
@@ -45,10 +45,19 @@ export class PostService {
     }
   }
 
-  async findAll() {
+  async findAll(search: string) {
     try {
-      const res = await this.db.select().from(post);
-      return res;
+      console.log('🌈 Service层接受参数:', search);
+      if (search === undefined) {
+        const res = await this.db.select().from(post);
+        return res;
+      } else {
+        const res = await this.db
+          .select()
+          .from(post)
+          .where(or(like(post.title, `%${search}%`)));
+        return res;
+      }
     } catch (e) {
       console.log('查询所有帖子失败:', e);
       throw new Error('无法查询所有帖子');
